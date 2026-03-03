@@ -88,24 +88,24 @@ class LocalDatabase {
   getDefaultProducts() {
     return [
       // Electronics
-      { id: '1', sellerId: '1', name: 'Wireless Earbuds Pro', price: 129.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&h=500&fit=crop', rating: 4.7, votes: 245 },
-      { id: '2', sellerId: '1', name: 'Smart Watch Ultra', price: 399.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&h=500&fit=crop', rating: 4.8, votes: 312 },
-      { id: '3', sellerId: '1', name: '4K Webcam HD', price: 89.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1597075933405-da42a56d4e46?w=500&h=500&fit=crop', rating: 4.6, votes: 189 },
+      { id: 'prod-1', sellerId: 'seller-1', name: 'Wireless Earbuds Pro', price: 129.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&h=500&fit=crop', rating: 4.7, votes: 245 },
+      { id: 'prod-2', sellerId: 'seller-1', name: 'Smart Watch Ultra', price: 399.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&h=500&fit=crop', rating: 4.8, votes: 312 },
+      { id: 'prod-3', sellerId: 'seller-1', name: '4K Webcam HD', price: 89.99, category: 'Electronics', image: 'https://images.unsplash.com/photo-1597075933405-da42a56d4e46?w=500&h=500&fit=crop', rating: 4.6, votes: 189 },
       
       // Apparel
-      { id: '4', sellerId: '2', name: 'Designer Leather Jacket', price: 249.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=500&fit=crop', rating: 4.9, votes: 421 },
-      { id: '5', sellerId: '2', name: 'Premium Denim Jeans', price: 79.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=500&fit=crop', rating: 4.7, votes: 356 },
-      { id: '6', sellerId: '2', name: 'Luxury Handbag', price: 189.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&h=500&fit=crop', rating: 4.8, votes: 298 },
+      { id: 'prod-4', sellerId: 'seller-2', name: 'Designer Leather Jacket', price: 249.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=500&fit=crop', rating: 4.9, votes: 421 },
+      { id: 'prod-5', sellerId: 'seller-2', name: 'Premium Denim Jeans', price: 79.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&h=500&fit=crop', rating: 4.7, votes: 356 },
+      { id: 'prod-6', sellerId: 'seller-2', name: 'Luxury Handbag', price: 189.99, category: 'Apparel', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&h=500&fit=crop', rating: 4.8, votes: 298 },
       
       // Haircare
-      { id: '7', sellerId: '3', name: 'Professional Hair Dryer', price: 149.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500&h=500&fit=crop', rating: 4.7, votes: 267 },
-      { id: '8', sellerId: '3', name: 'Keratin Treatment Kit', price: 69.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500&h=500&fit=crop', rating: 4.6, votes: 198 },
-      { id: '9', sellerId: '3', name: 'Styling Iron Pro', price: 99.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500&h=500&fit=crop', rating: 4.8, votes: 234 },
+      { id: 'prod-7', sellerId: 'seller-3', name: 'Professional Hair Dryer', price: 149.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500&h=500&fit=crop', rating: 4.7, votes: 267 },
+      { id: 'prod-8', sellerId: 'seller-3', name: 'Keratin Treatment Kit', price: 69.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500&h=500&fit=crop', rating: 4.6, votes: 198 },
+      { id: 'prod-9', sellerId: 'seller-3', name: 'Styling Iron Pro', price: 99.99, category: 'Haircare', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500&h=500&fit=crop', rating: 4.8, votes: 234 },
       
       // Services
-      { id: '10', sellerId: '4', name: 'Web Design Package', price: 499.99, category: 'Services', image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=500&h=500&fit=crop', rating: 4.9, votes: 145 },
-      { id: '11', sellerId: '4', name: 'Business Consultation', price: 299.99, category: 'Services', image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=500&h=500&fit=crop', rating: 4.7, votes: 112 },
-      { id: '12', sellerId: '4', name: 'Marketing Strategy', price: 599.99, category: 'Services', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=500&fit=crop', rating: 4.8, votes: 156 },
+      { id: 'prod-10', sellerId: 'seller-4', name: 'Web Design Package', price: 499.99, category: 'Services', image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=500&h=500&fit=crop', rating: 4.9, votes: 145 },
+      { id: 'prod-11', sellerId: 'seller-4', name: 'Business Consultation', price: 299.99, category: 'Services', image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=500&h=500&fit=crop', rating: 4.7, votes: 112 },
+      { id: 'prod-12', sellerId: 'seller-4', name: 'Marketing Strategy', price: 599.99, category: 'Services', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=500&fit=crop', rating: 4.8, votes: 156 },
     ];
   }
 
@@ -291,7 +291,6 @@ getSellerProductCount(sellerId) {
 
   // Product Management
   getProducts() {
-    console.log(JSON.parse(localStorage.getItem(DB_KEYS.PRODUCTS) || '[]'))
     return JSON.parse(localStorage.getItem(DB_KEYS.PRODUCTS) || '[]');
   }
 

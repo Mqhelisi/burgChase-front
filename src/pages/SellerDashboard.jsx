@@ -8,8 +8,6 @@ const SellerDashboard = () => {
   const { user, isAuthenticated, updateUserProfile } = useAuth();
   const location = useLocation();
   const [products, setProducts] = useState([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
@@ -41,17 +39,16 @@ const SellerDashboard = () => {
 
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem('refreshToken');
-      const response = await fetch(`http://localhost:5000/api/seller_prods/${user.sellerId}`, {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/api/products?seller_id=${user.sellerId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      console.log(data)
       setProducts(data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
-  }; 
+  };
 
   const handleVerificationRequest = async () => {
     try {
@@ -117,7 +114,6 @@ const SellerDashboard = () => {
     setFormData({ ...formData, images: newImages });
     setImagePreview(newPreviews);
   };
-const { apiCall } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -132,86 +128,44 @@ const { apiCall } = useAuth();
       return;
     }
 
-    // const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     // const url = editingProduct 
     //   ? `http://localhost:5000/api/products/${editingProduct.id}`
     //   : 'http://localhost:5000/api/products';
     
     // const method = editingProduct ? 'PUT' : 'POST';
-   setError('');
-    setSuccess('');
-try {
-      const response = await apiCall('/products', {
+
+    try {
+      console.log(formData);
+      const response = await fetch('http://localhost:5000/api/products', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          name: formData.name,
-          price: parseFloat(formData.price),
+         name: formData.name,
+         price: formData.price,
           description: formData.description,
           images: formData.images
         })
       });
 
       const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('Product created successfully!');
+
+      if (response.ok && data.success) {
+        await fetchProducts();
         setFormData({ name: '', price: '', description: '', images: [] });
+        setImagePreview([]);
+        setShowAddProduct(false);
+        setEditingProduct(null);
+        setMessage(editingProduct ? 'Product updated successfully!' : 'Product created successfully!');
       } else {
-        setError(data.message);
+        setMessage(data.message || 'Operation failed');
       }
-    } catch (err) {
-      setError('Failed to create product');
+    } catch (error) {
+      setMessage('Network error. Please try again.');
     }
-
-
-// const createProduct = async () => {
-//   const response = await apiCall('/products', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       name: 'New Product',
-//       price: 99.99,
-//       description: 'Product description',
-//       images: ['url1', 'url2']
-//     })
-//   });
-
-//   const data = await response.json();
-//   if (data.success) {
-//     console.log('Product created:', data.product);
-//   }
-// };
-
-    // try {
-    //   console.log(formData);
-    //   const response = await fetch('http://localhost:5000/api/products', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`,
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //      name: formData.name,
-    //      price: formData.price,
-    //       description: formData.description,
-    //       // images: formData.images
-    //     })
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok && data.success) {
-    //     await fetchProducts();
-    //     setFormData({ name: '', price: '', description: '', images: [] });
-    //     setImagePreview([]);
-    //     setShowAddProduct(false);
-    //     setEditingProduct(null);
-    //     setMessage(editingProduct ? 'Product updated successfully!' : 'Product created successfully!');
-    //   } else {
-    //     setMessage(data.message || 'Operation failed');
-    //   }
-    // } catch (error) {
-    //   setMessage('Network error. Please try again.');
-    // }
   };
 
   const handleEdit = (product) => {

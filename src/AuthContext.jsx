@@ -10,7 +10,6 @@ export const useAuth = () => {
   return context;
 };
 
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,10 +22,8 @@ export const AuthProvider = ({ children }) => {
    * Get current user from backend using stored token
    * Called on app load to restore authentication state
    */
-
-
   const getCurrentUser = async () => {
-    const token = localStorage.getItem('refreshToken');
+    const token = localStorage.getItem('token');
     console.log(token)
     if (!token) {
       setLoading(false);
@@ -35,42 +32,13 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
 
-    // Try to refresh token
-  const tryRefreshToken = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      logout();
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_URL}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${refreshToken}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        await getCurrentUser();
-      } else {
-        logout();
-      }
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-      logout();
-    }
-  };
-
-    try {
-    // console.log(token)
+    console.log(token)
 
       const response = await fetch(`${API_URL}/auth/me`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('refreshToken')}`
+          'Authorization': `Bearer ${getToken()}`
         }
       });
 
@@ -131,10 +99,9 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok && data.success) {
         // Save token to localStorage (sanitized)
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('refreshToken', data.refreshToken);
+        sanitizeAndStoreToken(data.token);
         
-        // Set user
+        // Set user state
         setUser(data.user);
         setIsAuthenticated(true);
 
@@ -254,37 +221,6 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // API call helper with automatic token refresh
-  const apiCall = async (endpoint, options = {}) => {
-    const token = localStorage.getItem('token');
-    // console.log(token)
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
-    });
-
-    // If token expired, try to refresh and retry
-    if (response.status === 401) {
-      await tryRefreshToken();
-      const newToken = localStorage.getItem('token');
-      
-      return fetch(`${API_URL}${endpoint}`, {
-        ...options,
-        headers: {
-          'Authorization': `Bearer ${newToken}`,
-          'Content-Type': 'application/json',
-          ...options.headers
-        }
-      });
-    }
-
-    return response;
-  };
-
   /**
    * Update user profile (for in-app updates without re-fetching)
    * Useful when user data changes (like verification status)
@@ -355,7 +291,6 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshUser,
     updateUserProfile,
-    apiCall,
     
     // Helpers
     hasRole,

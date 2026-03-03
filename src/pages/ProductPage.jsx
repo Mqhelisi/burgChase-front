@@ -14,68 +14,16 @@ const ProductPage = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [showVoteSuccess, setShowVoteSuccess] = useState(false);
 
-  // useEffect(() => {
-  //   const productData = db.getProducts().find(p => p.id === productId);
-  //   if (productData) {
-  //     setProduct(productData);
-  //     const sellerData = db.getSellerById(productData.sellerId);
-  //     setSeller(sellerData);
-  //     const reviewData = db.getReviewsByProduct(productId);
-  //     setReviews(reviewData);
-  //   }
-  // }, [productId]);
-
- useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${productId}`)
-   
-   .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      })
-      .then(data => {
-        console.log('Fetched data:', data.product); // Console log the response data
-        setProduct(data.product); // Store data in state if needed for rendering
-    
-    
-        fetch(`http://localhost:5000/api/sellers/${data.product.sellerId}`)
-        .then(
-          response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      }
-        ).then(Sdata => {
-        console.log('Fetched seller Sdata:', Sdata.seller); // Console log the response Sdata
-          setSeller(Sdata.seller)
-   
-   
-          fetch(`http://localhost:5000/api/reviews/${data.product.id}`)
-        .then(
-          response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      }
-        ).then(Rdata => {
-        console.log('Fetched review Rdata:', Rdata.reviews); // Console log the response Rdata
-          setReviews(Rdata.reviews)
-        })
-    
-        })
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error); // Handle any errors
-      });
-  }, []); // The empty array ensures this effect runs only once when the component mounts
-   
-
+  useEffect(() => {
+    const productData = db.getProducts().find(p => p.id === productId);
+    if (productData) {
+      setProduct(productData);
+      const sellerData = db.getSellerById(productData.sellerId);
+      setSeller(sellerData);
+      const reviewData = db.getReviewsByProduct(productId);
+      setReviews(reviewData);
+    }
+  }, [productId]);
 
   const handleVote = (rating) => {
     if (!isAuthenticated) {

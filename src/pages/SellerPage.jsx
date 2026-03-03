@@ -9,42 +9,11 @@ const SellerPage = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // const sellerData = db.(sellerId);
-    // const productData = db.getProductsBySeller(sellerId);
-    // setSeller(sellerData);
-    // setProducts(productData);
-    fetch(`http://localhost:5000/api/seller_prods/${sellerId}`)
-   
-   .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      })
-      .then(data => {
-        console.log('Fetched data:', data.products); // Console log the response data
-        setProducts(data.products); // Store data in state if needed for rendering
-      
-   fetch(`http://localhost:5000/api/sellers/${sellerId}`)
-   
-   .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      })
-      .then(data => {
-        console.log('Fetched data:', data.seller); // Console log the response data
-        setSeller(data.seller); // St   
-      })
-      
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error); // Handle any errors
-      })
-  }, []);
+    const sellerData = db.getSellerById(sellerId);
+    const productData = db.getProductsBySeller(sellerId);
+    setSeller(sellerData);
+    setProducts(productData);
+  }, [sellerId]);
 
   if (!seller) {
     return (

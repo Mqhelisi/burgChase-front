@@ -1,37 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-// import { db } from '../database';
-import { useState, useEffect } from 'react';
-
+import { db } from '../database';
 
 const Sellers = () => {
-  const [sellers, setSellers] = useState([]);
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/sellers')
-   
-   .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse the JSON data from the response body
-      })
-      .then(data => {
-        console.log('Fetched data:', data.sellers); // Console log the response data
-        setSellers(data.sellers); // Store data in state if needed for rendering
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error); // Handle any errors
-      });
-  }, []); // The empty array ensures this effect runs only once when the component mounts
-   
-   
-   
-    // .then(res => res.json())
-    // // .then(setSellers(res.json().sellers))
-    // .then(console.log(res))
-    // }, []);
+  const sellers = db.getSellers();
 
   return (
     <div className="min-h-screen py-12">

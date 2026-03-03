@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { db } from '../database';
 import { useAuth } from '../AuthContext';
+import { api } from '../api';
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -14,16 +15,43 @@ const ProductPage = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [showVoteSuccess, setShowVoteSuccess] = useState(false);
 
-  useEffect(() => {
-    const productData = db.getProducts().find(p => p.id === productId);
-    if (productData) {
-      setProduct(productData);
-      const sellerData = db.getSellerById(productData.sellerId);
-      setSeller(sellerData);
-      const reviewData = db.getReviewsByProduct(productId);
-      setReviews(reviewData);
-    }
-  }, [productId]);
+  // useEffect(() => {
+  //   const productData = db.getProducts().find(p => p.id === productId);
+  //   if (productData) {
+  //     setProduct(productData);
+  //     const sellerData = db.getSellerById(productData.sellerId);
+  //     setSeller(sellerData);
+  //     const reviewData = db.getReviewsByProduct(productId);
+  //     setReviews(reviewData);
+  //   }
+  // }, [productId]);
+
+ useEffect(() => {
+    (async () => {
+      try {
+        const response = await api(`/api/products/${productId}`);
+        if (!response.ok) throw new Error('Failed to fetch product');
+        const data = await response.json();
+        setProduct(data.product);
+
+        const sellerRes = await api(`/api/sellers/${data.product.sellerId}`);
+        if (sellerRes.ok) {
+          const sdata = await sellerRes.json();
+          setSeller(sdata.seller);
+        }
+
+        const reviewsRes = await api(`/api/reviews/${data.product.id}`);
+        if (reviewsRes.ok) {
+          const rdata = await reviewsRes.json();
+          setReviews(rdata.reviews);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    })();
+  }, [productId]); // Update when productId changes
+   
+
 
   const handleVote = (rating) => {
     if (!isAuthenticated) {

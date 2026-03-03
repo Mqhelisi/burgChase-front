@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { db } from '../database';
+import { api } from '../api';
 
 const SellerPage = () => {
   const { sellerId } = useParams();
@@ -9,11 +10,42 @@ const SellerPage = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const sellerData = db.getSellerById(sellerId);
-    const productData = db.getProductsBySeller(sellerId);
-    setSeller(sellerData);
-    setProducts(productData);
-  }, [sellerId]);
+    // const sellerData = db.(sellerId);
+    // const productData = db.getProductsBySeller(sellerId);
+    // setSeller(sellerData);
+    // setProducts(productData);
+    api(`/api/seller_prods/${sellerId}`)
+   
+     .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON data from the response body
+      })
+      .then(data => {
+        console.log('Fetched data:', data.products); // Console log the response data
+        setProducts(data.products); // Store data in state if needed for rendering
+      
+  api(`/api/sellers/${sellerId}`)
+   
+  .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON data from the response body
+      })
+      .then(data => {
+        console.log('Fetched data:', data.seller); // Console log the response data
+        setSeller(data.seller); // St   
+      })
+      
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // Handle any errors
+      })
+  }, []);
 
   if (!seller) {
     return (

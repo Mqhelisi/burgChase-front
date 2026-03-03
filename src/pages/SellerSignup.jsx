@@ -24,6 +24,7 @@ const SellerSignup = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { registerSeller } = useAuth();
 
   const handleCategorySelect = (categoryName) => {
     setFormData({ ...formData, category: categoryName });
@@ -34,19 +35,10 @@ const SellerSignup = () => {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register-seller', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        // Store token
-        localStorage.setItem('token', data.token);
-        
-        // Redirect to dashboard with success message
+      const data = await registerSeller(formData);
+
+      if (data && data.success) {
+        // registerSeller already stores token via AuthContext
         navigate('/seller-dashboard', { 
           state: { 
             message: 'Account created successfully! You can post up to 5 products. Request verification to unlock 15 products.',

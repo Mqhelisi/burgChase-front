@@ -8,6 +8,8 @@ const SellerDashboard = () => {
   const { user, isAuthenticated, updateUserProfile } = useAuth();
   const location = useLocation();
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
@@ -39,38 +41,24 @@ const SellerDashboard = () => {
 
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/products?seller_id=${user.sellerId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await apiCall(`/seller_prods/${user.sellerId}`, {
+        method: 'GET'
       });
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
-  };
+  }; 
 
   const handleVerificationRequest = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/sellers/request-verification', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
+      const response = await apiCall('/sellers/request-verification', { method: 'POST' });
       const data = await response.json();
-      
       if (response.ok && data.success) {
         setVerificationRequested(true);
         setMessage('Verification requested! Admin will review your account soon.');
-        
-        // Update user profile
-        if (updateUserProfile) {
-          updateUserProfile({ verificationRequested: true });
-        }
+        if (updateUserProfile) updateUserProfile({ verificationRequested: true });
       } else {
         setMessage(data.message || 'Failed to request verification');
       }
@@ -114,6 +102,7 @@ const SellerDashboard = () => {
     setFormData({ ...formData, images: newImages });
     setImagePreview(newPreviews);
   };
+const { apiCall } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,44 +117,86 @@ const SellerDashboard = () => {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
     // const url = editingProduct 
     //   ? `http://localhost:5000/api/products/${editingProduct.id}`
     //   : 'http://localhost:5000/api/products';
     
     // const method = editingProduct ? 'PUT' : 'POST';
-
-    try {
-      console.log(formData);
-      const response = await fetch('http://localhost:5000/api/products', {
+   setError('');
+    setSuccess('');
+try {
+      const response = await apiCall('/products', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({
-         name: formData.name,
-         price: formData.price,
+          name: formData.name,
+          price: parseFloat(formData.price),
           description: formData.description,
           images: formData.images
         })
       });
 
       const data = await response.json();
-
-      if (response.ok && data.success) {
-        await fetchProducts();
+      
+      if (data.success) {
+        setSuccess('Product created successfully!');
         setFormData({ name: '', price: '', description: '', images: [] });
-        setImagePreview([]);
-        setShowAddProduct(false);
-        setEditingProduct(null);
-        setMessage(editingProduct ? 'Product updated successfully!' : 'Product created successfully!');
       } else {
-        setMessage(data.message || 'Operation failed');
+        setError(data.message);
       }
-    } catch (error) {
-      setMessage('Network error. Please try again.');
+    } catch (err) {
+      setError('Failed to create product');
     }
+
+
+// const createProduct = async () => {
+//   const response = await apiCall('/products', {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       name: 'New Product',
+//       price: 99.99,
+//       description: 'Product description',
+//       images: ['url1', 'url2']
+//     })
+//   });
+
+//   const data = await response.json();
+//   if (data.success) {
+//     console.log('Product created:', data.product);
+//   }
+// };
+
+    // try {
+    //   console.log(formData);
+    //   const response = await fetch('http://localhost:5000/api/products', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Authorization': `Bearer ${token}`,
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //      name: formData.name,
+    //      price: formData.price,
+    //       description: formData.description,
+    //       // images: formData.images
+    //     })
+    //   });
+
+    //   const data = await response.json();
+
+    //   if (response.ok && data.success) {
+    //     await fetchProducts();
+    //     setFormData({ name: '', price: '', description: '', images: [] });
+    //     setImagePreview([]);
+    //     setShowAddProduct(false);
+    //     setEditingProduct(null);
+    //     setMessage(editingProduct ? 'Product updated successfully!' : 'Product created successfully!');
+    //   } else {
+    //     setMessage(data.message || 'Operation failed');
+    //   }
+    // } catch (error) {
+    //   setMessage('Network error. Please try again.');
+    // }
   };
 
   const handleEdit = (product) => {
@@ -183,13 +214,8 @@ const SellerDashboard = () => {
   const handleDelete = async (productId) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
-    const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
+      const response = await apiCall(`/products/${productId}`, { method: 'DELETE' });
       if (response.ok) {
         await fetchProducts();
         setMessage('Product deleted successfully');

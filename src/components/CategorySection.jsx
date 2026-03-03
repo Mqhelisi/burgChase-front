@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { api } from '../api';
 import { Link } from 'react-router-dom';
 import { db } from '../database';
 
@@ -15,12 +16,49 @@ const CategorySection = () => {
   const [topProducts, setTopProducts] = useState([]);
   const [topSellers, setTopSellers] = useState([]);
 
-  useEffect(() => {
-    const products = db.getTopProductsByCategory(selectedCategory, 6);
-    const sellers = db.getTopSellersByCategory(selectedCategory, 3);
-    setTopProducts(products);
-    setTopSellers(sellers);
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   const products = db.getTopProductsByCategory(selectedCategory, 6);
+  //   const sellers = db.getTopSellersByCategory(selectedCategory, 3);
+  //   setTopProducts(products);
+  //   setTopSellers(sellers);
+  //   console.log(topSellers)
+  // }, [selectedCategory]);
+
+ useEffect(() => {
+   api('/api/products')
+  .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON data from the response body
+      })
+      .then(data => {
+        console.log('Fetched data:', data.products); // Console log the response data
+        setTopProducts(data.products.filter(product => product.category === selectedCategory)); // Store data in state if needed for rendering
+    
+    
+        api('/api/sellers')
+        .then(
+          response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON data from the response body
+      }
+        ).then(Sdata => {
+        console.log('Fetched seller Sdata:', Sdata.sellers); // Console log the response Sdata
+          setTopSellers(Sdata.sellers)
+       
+        })
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // Handle any errors
+      });
+  }, [selectedCategory]); // The empty array ensures this effect runs only once when the component mounts
+   
+
 
   return (
     <section className="py-20 bg-gradient-to-b from-white to-dark-50">

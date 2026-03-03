@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from '../api';
 import { Link } from 'react-router-dom';
 import { db } from '../database';
 
@@ -7,7 +8,30 @@ const categories = ['Apparel', 'Electronics', 'Haircare', 'Services'];
 
 const Categories = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [products] = useState(db.getProducts());
+  // const [products] = useState(db.getProducts());
+  // const [products] = Product.query.all()
+  const [products, setProducts] = useState([])
+
+
+  useEffect(() => {
+    api('/api/products')
+   .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON data from the response body
+      })
+      .then(data => {
+        console.log('Fetched data:', data.products); // Console log the response data
+        setProducts(data.products); // Store data in state if needed for rendering
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // Handle any errors
+      });
+  }, []); // The empty array ensures this effect runs only once when the component mounts
+   
+
 
   const filteredProducts = selectedCategory === 'All'
     ? products

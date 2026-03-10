@@ -14,6 +14,7 @@ const ProductPage = () => {
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const [selectedRating, setSelectedRating] = useState(0);
   const [showVoteSuccess, setShowVoteSuccess] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // useEffect(() => {
   //   const productData = db.getProducts().find(p => p.id === productId);
@@ -33,6 +34,7 @@ const ProductPage = () => {
         if (!response.ok) throw new Error('Failed to fetch product');
         const data = await response.json();
         setProduct(data.product);
+        setCurrentImageIndex(0); // Reset image carousel on new product
 
         const sellerRes = await api(`/api/sellers/${data.product.sellerId}`);
         if (sellerRes.ok) {
@@ -51,6 +53,21 @@ const ProductPage = () => {
     })();
   }, [productId]); // Update when productId changes
    
+  const handlePrevImage = () => {
+    if (!product) return;
+    const images = product.images || [product.image];
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    if (!product) return;
+    const images = product.images || [product.image];
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleThumbnailClick = (index) => {
+    setCurrentImageIndex(index);
+  };
 
 
   const handleVote = (rating) => {
@@ -97,17 +114,97 @@ const ProductPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Product Header */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Image */}
+          {/* Image Carousel */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-effect rounded-2xl overflow-hidden"
+            className="flex flex-col"
           >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-96 object-cover"
-            />
+            {/* Main Image Display */}
+            <div className="glass-effect rounded-2xl overflow-hidden mb-4 relative">
+              <div className="relative w-full h-96">
+                <motion.img
+                  key={currentImageIndex}
+                  src={product.images ? product.images[currentImageIndex] : product.image}
+                  alt={`${product.name} - Image ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                
+                {/* Image Counter */}
+                <div className="absolute top-4 right-4 bg-dark-900/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  {currentImageIndex + 1} / {product.images ? product.images.length : 1}
+                </div>
+
+                {/* Navigation Buttons */}
+                {(product.images && product.images.length > 1) && (
+                  <>
+                    <motion.button
+                      onClick={handlePrevImage}
+                      whileHover={{ scale: 1.1, backgroundColor: 'rgba(139, 92, 246, 0.8)' }}
+                      whileTap={{ scale: 0.9 }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-primary-500/60 hover:bg-primary-600/80 text-white w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                    >
+                      ‹
+                    </motion.button>
+                    <motion.button
+                      onClick={handleNextImage}
+                      whileHover={{ scale: 1.1, backgroundColor: 'rgba(139, 92, 246, 0.8)' }}
+                      whileTap={{ scale: 0.9 }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-primary-500/60 hover:bg-primary-600/80 text-white w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                    >
+                      ›
+                    </motion.button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Thumbnail Navigation */}
+            {product.images && product.images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {product.images.map((image, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => handleThumbnailClick(index)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                      currentImageIndex === index
+                        ? 'border-primary-500 ring-2 ring-primary-500/30'
+                        : 'border-dark-200 hover:border-dark-300'
+                    }`}
+                  >
+                    <img
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.button>
+                ))}
+              </div>
+            )}
+
+            {/* Dot Indicators */}
+            {product.images && product.images.length > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                {product.images.map((_, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => handleThumbnailClick(index)}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      currentImageIndex === index
+                        ? 'bg-primary-500 w-8'
+                        : 'bg-dark-300 hover:bg-dark-400'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Details */}

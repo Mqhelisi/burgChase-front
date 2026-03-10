@@ -64,6 +64,18 @@ const Header = () => {
                   Dashboard
                 </motion.span>
               </Link>
+              
+            )}
+            {user && user.role === 'seller' && (
+              <Link to="/seller-profile">
+                <motion.span 
+                  className="text-primary-400 hover:text-primary-300 font-semibold transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  Profile
+                </motion.span>
+              </Link>
+              
             )}
           </nav>
 

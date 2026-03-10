@@ -11,6 +11,7 @@ import ProductPage from './pages/ProductPage';
 import Profile from './pages/Profile';
 import SellerSignup from './pages/SellerSignup';
 import SellerDashboard from './pages/SellerDashboard';
+import SellerProfile from './pages/SellerProfile';
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/seller-signup" element={<SellerSignup />} />
+            {/* <Route path="/seller-signup" element={<SellerSignup />} /> */}
             <Route path="/seller-dashboard" element={<SellerDashboard />} />
+            <Route path="/seller-profile" element={<SellerProfile />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/sellers" element={<Sellers />} />
             <Route path="/seller/:sellerId" element={<SellerPage />} />

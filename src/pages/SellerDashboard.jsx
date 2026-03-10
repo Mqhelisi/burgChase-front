@@ -149,54 +149,6 @@ try {
     }
 
 
-// const createProduct = async () => {
-//   const response = await apiCall('/products', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       name: 'New Product',
-//       price: 99.99,
-//       description: 'Product description',
-//       images: ['url1', 'url2']
-//     })
-//   });
-
-//   const data = await response.json();
-//   if (data.success) {
-//     console.log('Product created:', data.product);
-//   }
-// };
-
-    // try {
-    //   console.log(formData);
-    //   const response = await fetch('http://localhost:5000/api/products', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`,
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //      name: formData.name,
-    //      price: formData.price,
-    //       description: formData.description,
-    //       // images: formData.images
-    //     })
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok && data.success) {
-    //     await fetchProducts();
-    //     setFormData({ name: '', price: '', description: '', images: [] });
-    //     setImagePreview([]);
-    //     setShowAddProduct(false);
-    //     setEditingProduct(null);
-    //     setMessage(editingProduct ? 'Product updated successfully!' : 'Product created successfully!');
-    //   } else {
-    //     setMessage(data.message || 'Operation failed');
-    //   }
-    // } catch (error) {
-    //   setMessage('Network error. Please try again.');
-    // }
   };
 
   const handleEdit = (product) => {
@@ -261,7 +213,7 @@ try {
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-dark-100 mb-2">Seller Dashboard</h1>
+              <h1 className="text-3xl font-bold text-dark-400 mb-2">Seller Dashboard</h1>
               <p className="text-dark-300">Welcome back, {user.name}!</p>
             </div>
             <div className="mt-4 lg:mt-0 text-right">

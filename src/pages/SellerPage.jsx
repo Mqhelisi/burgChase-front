@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { db } from '../database';
 import { api } from '../api';
-
+import WhatsAppButton from '../components/WhatsappButton';
 const SellerPage = () => {
   const { sellerId } = useParams();
   const [seller, setSeller] = useState(null);
@@ -125,12 +125,10 @@ const SellerPage = () => {
           <h2 className="text-2xl font-bold text-dark-900 mb-4">About {seller.name}</h2>
           <p className="text-dark-700 text-lg leading-relaxed">{seller.description}</p>
           <div className="mt-6 flex items-center space-x-4">
-            <a
-              href={`mailto:${seller.email}`}
-              className="btn-primary"
-            >
-              Contact Seller
-            </a>
+            <WhatsAppButton 
+        phoneNumber={seller.phoneNumber}// Replace with your number and country code
+        message="Hello I would like to see what items you have on special today"
+      />
           </div>
         </motion.div>
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../database';
 import { useAuth } from '../AuthContext';
 import { api } from '../api';
-
+import WhatsAppButton from '../components/WhatsappButton';
 const ProductPage = () => {
   const { productId } = useParams();
   const { user, isAuthenticated, isBuyer } = useAuth();
@@ -253,13 +253,10 @@ const ProductPage = () => {
               </motion.div>
             </Link>
 
-            <motion.button
-              className="btn-primary w-full text-lg mb-4"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Contact Seller
-            </motion.button>
+           <WhatsAppButton 
+        phoneNumber={seller.phoneNumber} // Replace with your number and country code
+        message={` Hello I am interested in your item: ${product.name} `}
+      />
           </motion.div>
         </div>
 

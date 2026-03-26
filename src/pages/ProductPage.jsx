@@ -254,7 +254,7 @@ const ProductPage = () => {
             </Link>
 
            <WhatsAppButton 
-        phoneNumber={seller.phoneNumber} // Replace with your number and country code
+        phoneNumber={seller.phone} // Replace with your number and country code
         message={` Hello I am interested in your item: ${product.name} `}
       />
           </motion.div>

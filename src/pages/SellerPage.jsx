@@ -126,7 +126,7 @@ const SellerPage = () => {
           <p className="text-dark-700 text-lg leading-relaxed">{seller.description}</p>
           <div className="mt-6 flex items-center space-x-4">
             <WhatsAppButton 
-        phoneNumber={seller.phoneNumber}// Replace with your number and country code
+        phoneNumber={seller.phone}// Replace with your number and country code
         message="Hello I would like to see what items you have on special today"
       />
           </div>
